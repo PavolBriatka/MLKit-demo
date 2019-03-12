@@ -1,4 +1,4 @@
-package com.example.redmlkitdemo.scannerutils;
+package com.example.redmlkitdemo.scannerutils.common;
 
 /** Describing a frame info. */
 public class FrameMetadata {

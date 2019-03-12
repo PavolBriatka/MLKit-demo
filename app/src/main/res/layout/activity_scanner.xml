@@ -4,25 +4,26 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:orientation="vertical"
         tools:context=".scanner.ScannerActivity">
 
-    <com.droidmentor.mlkitbarcodescan.BarCodeScannerUtil.common.CameraSourcePreview
+    <com.example.redmlkitdemo.scannerutils.common.CameraSourcePreview
             android:id="@+id/preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
 
-        <com.droidmentor.mlkitbarcodescan.BarCodeScannerUtil.common.GraphicOverlay
+        <com.example.redmlkitdemo.scannerutils.common.GraphicOverlay
                 android:id="@+id/barcodeOverlay"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
 
-    </com.droidmentor.mlkitbarcodescan.BarCodeScannerUtil.common.CameraSourcePreview>
-
-    <com.droidmentor.mlkitbarcodescan.BarCodeScannerUtil.OverlayView
-            android:id="@+id/overlayView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"/>
+    </com.example.redmlkitdemo.scannerutils.common.CameraSourcePreview>
 
 
 </RelativeLayout>

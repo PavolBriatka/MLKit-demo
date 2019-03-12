@@ -1,4 +1,4 @@
-package com.example.redmlkitdemo.scannerutils;
+package com.example.redmlkitdemo.scannerutils.common;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -7,15 +7,18 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
+
 import com.google.android.gms.common.images.Size;
 
 import java.io.IOException;
+import java.lang.Thread.State;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -30,10 +33,10 @@ import java.util.Map;
 @SuppressLint("MissingPermission")
 public class CameraSource {
     @SuppressLint("InlinedApi")
-    public static final int CAMERA_FACING_BACK = Camera.CameraInfo.CAMERA_FACING_BACK;
+    public static final int CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK;
 
     @SuppressLint("InlinedApi")
-    public static final int CAMERA_FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    public static final int CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT;
 
     private static final String TAG = "MIDemoApp:CameraSource";
 
@@ -114,7 +117,7 @@ public class CameraSource {
         processingRunnable = new FrameProcessingRunnable();
 
         if (Camera.getNumberOfCameras() == 1) {
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            CameraInfo cameraInfo = new CameraInfo();
             Camera.getCameraInfo(0, cameraInfo);
             facing = cameraInfo.facing;
         }
@@ -328,7 +331,7 @@ public class CameraSource {
      * @param facing the desired camera (front-facing or rear-facing)
      */
     private static int getIdForRequestedCamera(int facing) {
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        CameraInfo cameraInfo = new CameraInfo();
         for (int i = 0; i < Camera.getNumberOfCameras(); ++i) {
             Camera.getCameraInfo(i, cameraInfo);
             if (cameraInfo.facing == facing) {
@@ -508,7 +511,7 @@ public class CameraSource {
                 Log.e(TAG, "Bad rotation value: " + rotation);
         }
 
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        CameraInfo cameraInfo = new CameraInfo();
         Camera.getCameraInfo(cameraId, cameraInfo);
 
         int angle;
@@ -603,7 +606,7 @@ public class CameraSource {
          */
         @SuppressLint("Assert")
         void release() {
-            assert (processingThread.getState() == Thread.State.TERMINATED);
+            assert (processingThread.getState() == State.TERMINATED);
         }
 
         /** Marks the runnable as active/not active. Signals any blocked threads to continue. */

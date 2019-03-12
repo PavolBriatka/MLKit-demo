@@ -1,4 +1,4 @@
-package com.example.redmlkitdemo.scannerutils;
+package com.example.redmlkitdemo.scannerutils.common;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

@@ -1,6 +1,8 @@
-package com.example.redmlkitdemo.scannerutils;
+package com.example.redmlkitdemo.scannerutils.common;
 
 import android.graphics.Bitmap;
+import com.example.redmlkitdemo.scannerutils.common.FrameMetadata;
+import com.example.redmlkitdemo.scannerutils.common.GraphicOverlay;
 import com.google.firebase.ml.common.FirebaseMLException;
 
 import java.nio.ByteBuffer;
