@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "510740044161",
+    "firebase_url": "https://red-mlkit-demo.firebaseio.com",
+    "project_id": "red-mlkit-demo",
+    "storage_bucket": "red-mlkit-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510740044161:android:2b2dc65d75e6997d",
+        "android_client_info": {
+          "package_name": "com.example.redmlkitdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510740044161-m5v2cgjikgvmofi5b2indjsrf270cahd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXLhO6pKhaDd7qj-MV2O6ye_rmPJrGMmM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
