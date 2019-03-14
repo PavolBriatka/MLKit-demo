@@ -7,7 +7,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.example.redmlkitdemo.R
-import com.example.redmlkitdemo.scannerutils.BarcodeScanningProcessor
+import com.example.redmlkitdemo.scannerutils.common.BarcodeScanningProcessor
 import com.example.redmlkitdemo.scannerutils.common.CameraSource
 import com.google.firebase.ml.common.FirebaseMLException
 import kotlinx.android.synthetic.main.activity_scanner.*
