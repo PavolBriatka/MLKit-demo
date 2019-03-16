@@ -46,6 +46,10 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         this.barcodeResultListener = barcodeResultListener;
     }
 
+    public void setShouldIgnore(Boolean value) {
+        this.shouldIgnore.set(value);
+    }
+
     @Override
     public void stop() {
         try {

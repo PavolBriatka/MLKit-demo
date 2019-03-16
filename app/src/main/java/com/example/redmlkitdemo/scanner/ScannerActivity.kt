@@ -3,11 +3,13 @@ package com.example.redmlkitdemo.scanner
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import com.example.redmlkitdemo.R
 import com.example.redmlkitdemo.scannerutils.common.BarcodeScanningProcessor
 import com.example.redmlkitdemo.scannerutils.common.CameraSource
 import com.example.redmlkitdemo.scannerutils.common.FrameMetadata
@@ -42,7 +44,7 @@ class ScannerActivity : AppCompatActivity() {
 
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scanner)
+        setContentView(com.example.redmlkitdemo.R.layout.activity_scanner)
 
         if (allPermissionsGranted()) {
             createCameraSource()
@@ -53,6 +55,9 @@ class ScannerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        /*This has to be restored to default (false) state every time the activity resumes.
+        * Otherwise, the scanner would detect only one code per activity lifecycle*/
+        barcodeScanningProcessor.setShouldIgnore(false)
         startCameraSource()
     }
 
@@ -150,16 +155,23 @@ class ScannerActivity : AppCompatActivity() {
                     putExtra("scanning_result", raw)
                 }
 
+                vibrate()
                 startActivity(intent)
-
-                finish()
             }
 
-            override fun onFailure(e: java.lang.Exception) {
-
-            }
+            override fun onFailure(e: java.lang.Exception) {}
         }
 
+    }
+
+    private fun vibrate() {
+        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            //deprecated in API 26
+            v.vibrate(50)
+        }
     }
 
     companion object {
