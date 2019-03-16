@@ -19,6 +19,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     private static final String TAG = "BarcodeScanProc";
 
     private final FirebaseVisionBarcodeDetector detector;
+    BarcodeResultListener barcodeResultListener;
 
     public BarcodeScanningProcessor() {
         // Note that if you know which format of barcode your app is dealing with, detection will be
@@ -27,6 +28,18 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         //     .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
         //     .build();
         detector = FirebaseVision.getInstance().getVisionBarcodeDetector();
+    }
+
+    public BarcodeScanningProcessor(FirebaseVisionBarcodeDetector detector) {
+        this.detector = detector;
+    }
+
+    /*public BarcodeResultListener getBarcodeResultListener() {
+        return barcodeResultListener;
+    }*/
+
+    public void setBarcodeResultListener(BarcodeResultListener barcodeResultListener) {
+        this.barcodeResultListener = barcodeResultListener;
     }
 
     @Override
@@ -46,18 +59,27 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     @Override
     protected void onSuccess(
             @NonNull List<FirebaseVisionBarcode> barcodes,
-            @NonNull FrameMetadata frameMetadata,
-            @NonNull GraphicOverlay graphicOverlay) {
-        graphicOverlay.clear();
-        for (int i = 0; i < barcodes.size(); ++i) {
-            FirebaseVisionBarcode barcode = barcodes.get(i);
-            BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
-            graphicOverlay.add(barcodeGraphic);
+            @NonNull FrameMetadata frameMetadata) {
+
+
+        if (barcodeResultListener != null && barcodes.size() > 0) {
+            barcodeResultListener.onSuccess(barcodes, frameMetadata);
         }
+
     }
 
     @Override
     protected void onFailure(@NonNull Exception e) {
         Log.e(TAG, "Barcode detection failed " + e);
+        if (barcodeResultListener != null)
+            barcodeResultListener.onFailure(e);
+    }
+
+    public interface BarcodeResultListener {
+        void onSuccess(
+                @NonNull List<FirebaseVisionBarcode> barcodes,
+                @NonNull FrameMetadata frameMetadata);
+
+        void onFailure(@NonNull Exception e);
     }
 }

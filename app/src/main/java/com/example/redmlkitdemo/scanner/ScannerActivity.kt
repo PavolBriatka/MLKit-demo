@@ -1,6 +1,7 @@
 package com.example.redmlkitdemo.scanner
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -9,7 +10,11 @@ import android.support.v7.app.AppCompatActivity
 import com.example.redmlkitdemo.R
 import com.example.redmlkitdemo.scannerutils.common.BarcodeScanningProcessor
 import com.example.redmlkitdemo.scannerutils.common.CameraSource
+import com.example.redmlkitdemo.scannerutils.common.FrameMetadata
 import com.google.firebase.ml.common.FirebaseMLException
+import com.google.firebase.ml.vision.FirebaseVision
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
 import kotlinx.android.synthetic.main.activity_scanner.*
 import java.io.IOException
 
@@ -31,6 +36,7 @@ class ScannerActivity : AppCompatActivity() {
                 arrayOfNulls(0)
             }
         }
+    private lateinit var barcodeScanningProcessor: BarcodeScanningProcessor
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -62,13 +68,25 @@ class ScannerActivity : AppCompatActivity() {
 
     private fun createCameraSource() {
 
+        val options = FirebaseVisionBarcodeDetectorOptions.Builder()
+            .setBarcodeFormats(
+                FirebaseVisionBarcode.FORMAT_QR_CODE
+            )
+            .build()
+
+        val detector = FirebaseVision.getInstance()
+            .getVisionBarcodeDetector(options)
+
 
         if (cameraSource == null) {
-            cameraSource = CameraSource(this, barcodeOverlay)
+            cameraSource = CameraSource(this)
         }
 
+        barcodeScanningProcessor = BarcodeScanningProcessor(detector)
+        barcodeScanningProcessor.setBarcodeResultListener(getBarcodeResultListener())
+
         try {
-            cameraSource?.setMachineLearningFrameProcessor(BarcodeScanningProcessor())
+            cameraSource?.setMachineLearningFrameProcessor(barcodeScanningProcessor)
         } catch (e: FirebaseMLException) {
 
         }
@@ -77,7 +95,7 @@ class ScannerActivity : AppCompatActivity() {
     private fun startCameraSource() {
         cameraSource?.let {
             try {
-                preview?.start(cameraSource, barcodeOverlay)
+                preview?.start(cameraSource)
             } catch (e: IOException) {
                 cameraSource?.release()
                 cameraSource = null
@@ -114,6 +132,36 @@ class ScannerActivity : AppCompatActivity() {
             createCameraSource()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun getBarcodeResultListener(): BarcodeScanningProcessor.BarcodeResultListener {
+
+        return object : BarcodeScanningProcessor.BarcodeResultListener {
+            override fun onSuccess(
+                barcodes: MutableList<FirebaseVisionBarcode>,
+                frameMetadata: FrameMetadata
+            ) {
+                var raw = ""
+                if (barcodes.isNotEmpty()) {
+                    for (barcode in barcodes) {
+                        raw = barcode.rawValue ?: ""
+                    }
+
+                    val intent = Intent(applicationContext, ScanningResultActivity::class.java).apply {
+                        putExtra("scanning_result", raw)
+                    }
+
+                    startActivity(intent)
+
+                    finish()
+                }
+            }
+
+            override fun onFailure(e: java.lang.Exception) {
+
+            }
+        }
+
     }
 
     companion object {
