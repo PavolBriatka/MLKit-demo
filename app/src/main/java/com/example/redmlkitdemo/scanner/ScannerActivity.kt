@@ -142,19 +142,17 @@ class ScannerActivity : AppCompatActivity() {
                 frameMetadata: FrameMetadata
             ) {
                 var raw = ""
-                if (barcodes.isNotEmpty()) {
-                    for (barcode in barcodes) {
-                        raw = barcode.rawValue ?: ""
-                    }
-
-                    val intent = Intent(applicationContext, ScanningResultActivity::class.java).apply {
-                        putExtra("scanning_result", raw)
-                    }
-
-                    startActivity(intent)
-
-                    finish()
+                for (barcode in barcodes) {
+                    raw = barcode.rawValue ?: ""
                 }
+
+                val intent = Intent(applicationContext, ScanningResultActivity::class.java).apply {
+                    putExtra("scanning_result", raw)
+                }
+
+                startActivity(intent)
+
+                finish()
             }
 
             override fun onFailure(e: java.lang.Exception) {

@@ -14,5 +14,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp"
+            android:gravity="center"
+            android:autoLink="web"
             android:id="@+id/scanning_result"/>
 </android.support.constraint.ConstraintLayout>

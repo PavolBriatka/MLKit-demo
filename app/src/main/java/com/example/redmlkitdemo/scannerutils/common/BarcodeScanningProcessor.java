@@ -10,6 +10,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Barcode Detector Demo.
@@ -17,6 +18,9 @@ import java.util.List;
 public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseVisionBarcode>> {
 
     private static final String TAG = "BarcodeScanProc";
+
+    //if a barcode is detected ignore any other results coming after.
+    private final AtomicBoolean shouldIgnore = new AtomicBoolean(false);
 
     private final FirebaseVisionBarcodeDetector detector;
     BarcodeResultListener barcodeResultListener;
@@ -34,9 +38,9 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         this.detector = detector;
     }
 
-    /*public BarcodeResultListener getBarcodeResultListener() {
+    public BarcodeResultListener getBarcodeResultListener() {
         return barcodeResultListener;
-    }*/
+    }
 
     public void setBarcodeResultListener(BarcodeResultListener barcodeResultListener) {
         this.barcodeResultListener = barcodeResultListener;
@@ -60,9 +64,14 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     protected void onSuccess(
             @NonNull List<FirebaseVisionBarcode> barcodes,
             @NonNull FrameMetadata frameMetadata) {
+        if (shouldIgnore.get()){
+            return;
+        }
 
 
         if (barcodeResultListener != null && barcodes.size() > 0) {
+            //once the app detects a barcode(s) we are no longer interested in the fed images.
+            shouldIgnore.set(true);
             barcodeResultListener.onSuccess(barcodes, frameMetadata);
         }
 
