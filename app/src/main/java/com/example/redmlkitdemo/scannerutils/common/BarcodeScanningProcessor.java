@@ -2,19 +2,18 @@ package com.example.redmlkitdemo.scannerutils.common;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.example.redmlkitdemo.scannerutils.BarcodeGraphic;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 
-
 import java.io.IOException;
 import java.util.List;
 
-/** Barcode Detector Demo. */
+/**
+ * Barcode Detector Demo.
+ */
 public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseVisionBarcode>> {
 
     private static final String TAG = "BarcodeScanProc";

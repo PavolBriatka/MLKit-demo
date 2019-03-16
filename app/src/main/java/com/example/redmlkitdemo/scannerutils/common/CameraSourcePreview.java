@@ -23,7 +23,6 @@ public class CameraSourcePreview extends ViewGroup {
     private boolean surfaceAvailable;
     private CameraSource cameraSource;
 
-    private GraphicOverlay overlay;
 
     public CameraSourcePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,7 +35,7 @@ public class CameraSourcePreview extends ViewGroup {
         addView(surfaceView);
     }
 
-    public void start(CameraSource cameraSource) throws IOException {
+    public void startCamera(CameraSource cameraSource) throws IOException {
         if (cameraSource == null) {
             stop();
         }
@@ -49,9 +48,8 @@ public class CameraSourcePreview extends ViewGroup {
         }
     }
 
-    public void start(CameraSource cameraSource, GraphicOverlay overlay) throws IOException {
-        this.overlay = overlay;
-        start(cameraSource);
+    public void start(CameraSource cameraSource) throws IOException {
+        startCamera(cameraSource);
     }
 
     public void stop() {
@@ -71,7 +69,7 @@ public class CameraSourcePreview extends ViewGroup {
     private void startIfReady() throws IOException {
         if (startRequested && surfaceAvailable) {
             cameraSource.start(surfaceView.getHolder());
-            if (overlay != null) {
+            /*if (overlay != null) {
                 Size size = cameraSource.getPreviewSize();
                 int min = Math.min(size.getWidth(), size.getHeight());
                 int max = Math.max(size.getWidth(), size.getHeight());
@@ -83,7 +81,7 @@ public class CameraSourcePreview extends ViewGroup {
                     overlay.setCameraInfo(max, min, cameraSource.getCameraFacing());
                 }
                 overlay.clear();
-            }
+            }*/
             startRequested = false;
         }
     }
