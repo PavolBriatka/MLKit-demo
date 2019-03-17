@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/** Processor for the text recognition demo. */
+/**
+ * Processor for the text recognition demo.
+ */
 public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVisionText> {
 
     private static final String TAG = "TextRecProc";
@@ -23,18 +25,31 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
     //if a text is captured ignore any other results coming after.
     private final AtomicBoolean shouldIgnore = new AtomicBoolean(false);
 
+    /*In case the user clicks on camera button but there is no text to detect in the picture,
+     * we do not need to set the ocr trigger*/
+    private final AtomicBoolean isValidSource = new AtomicBoolean(false);
+
     public TextRecognitionProcessor() {
         detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
     }
 
     public void setOcrResultTrigger(OcrResultTrigger resultTrigger) {
-        this.ocrResultTrigger = resultTrigger;
+        if (isValidSource.get()) {
+            this.ocrResultTrigger = resultTrigger;
+        }
     }
 
     public void setShouldIgnore(Boolean value) {
         this.shouldIgnore.set(value);
     }
-    public void decoupleTrigger() {ocrResultTrigger = null;}
+
+    public void setIsValidSource(Boolean value) {
+        this.isValidSource.set(value);
+    }
+
+    public void decoupleTrigger() {
+        ocrResultTrigger = null;
+    }
 
     @Override
     public void stop() {
@@ -56,7 +71,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
             @NonNull FrameMetadata frameMetadata,
             @NonNull GraphicOverlay graphicOverlay) {
 
-        if (shouldIgnore.get()){
+        if (shouldIgnore.get()) {
             return;
         }
 
@@ -74,7 +89,13 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
             }
         }
 
-        if (ocrResultTrigger != null &! results.getText().isEmpty()) {
+        if (!results.getText().isEmpty()) {
+            isValidSource.set(true);
+        } else {
+            isValidSource.set(false);
+        }
+
+        if (ocrResultTrigger != null & !results.getText().isEmpty()) {
             shouldIgnore.set(true);
             ocrResultTrigger.onSuccess(results);
         }
@@ -90,6 +111,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
 
     public interface OcrResultTrigger {
         void onSuccess(@NonNull FirebaseVisionText result);
+
         void onFailure(@NonNull Exception e);
     }
 }

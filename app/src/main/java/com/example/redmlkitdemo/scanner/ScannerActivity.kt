@@ -68,7 +68,9 @@ class ScannerActivity : AppCompatActivity() {
         * Otherwise, the scanner would detect only one code per activity lifecycle*/
         barcodeScanningProcessor?.setShouldIgnore(false)
 
+        /*Restore default state for the OCR processor*/
         textRecognitionProcessor?.setShouldIgnore(false)
+        textRecognitionProcessor?.setIsValidSource(false)
         textRecognitionProcessor?.decoupleTrigger()
 
         startCameraSource()
