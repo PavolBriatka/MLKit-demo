@@ -38,10 +38,6 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         this.detector = detector;
     }
 
-    public BarcodeResultListener getBarcodeResultListener() {
-        return barcodeResultListener;
-    }
-
     public void setBarcodeResultListener(BarcodeResultListener barcodeResultListener) {
         this.barcodeResultListener = barcodeResultListener;
     }

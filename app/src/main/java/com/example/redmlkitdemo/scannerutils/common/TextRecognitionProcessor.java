@@ -10,6 +10,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Processor for the text recognition demo. */
 public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVisionText> {
@@ -17,10 +18,23 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
     private static final String TAG = "TextRecProc";
 
     private final FirebaseVisionTextRecognizer detector;
+    OcrResultTrigger ocrResultTrigger;
+
+    //if a text is captured ignore any other results coming after.
+    private final AtomicBoolean shouldIgnore = new AtomicBoolean(false);
 
     public TextRecognitionProcessor() {
         detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
     }
+
+    public void setOcrResultTrigger(OcrResultTrigger resultTrigger) {
+        this.ocrResultTrigger = resultTrigger;
+    }
+
+    public void setShouldIgnore(Boolean value) {
+        this.shouldIgnore.set(value);
+    }
+    public void decoupleTrigger() {ocrResultTrigger = null;}
 
     @Override
     public void stop() {
@@ -41,6 +55,11 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
             @NonNull FirebaseVisionText results,
             @NonNull FrameMetadata frameMetadata,
             @NonNull GraphicOverlay graphicOverlay) {
+
+        if (shouldIgnore.get()){
+            return;
+        }
+
         graphicOverlay.clear();
         List<FirebaseVisionText.TextBlock> blocks = results.getTextBlocks();
         for (int i = 0; i < blocks.size(); i++) {
@@ -54,10 +73,23 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
                 }
             }
         }
+
+        if (ocrResultTrigger != null &! results.getText().isEmpty()) {
+            shouldIgnore.set(true);
+            ocrResultTrigger.onSuccess(results);
+        }
     }
 
     @Override
     protected void onFailure(@NonNull Exception e) {
         Log.w(TAG, "Text detection failed." + e);
+        if (ocrResultTrigger != null) {
+            ocrResultTrigger.onFailure(e);
+        }
+    }
+
+    public interface OcrResultTrigger {
+        void onSuccess(@NonNull FirebaseVisionText result);
+        void onFailure(@NonNull Exception e);
     }
 }
