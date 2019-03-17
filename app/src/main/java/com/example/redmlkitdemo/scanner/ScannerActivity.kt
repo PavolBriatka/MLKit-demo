@@ -95,7 +95,7 @@ class ScannerActivity : AppCompatActivity() {
 
 
                 if (cameraSource == null) {
-                    cameraSource = CameraSource(this)
+                    cameraSource = CameraSource(this, barcodeOverlay)
                 }
 
                 barcodeScanningProcessor = BarcodeScanningProcessor(detector)
@@ -119,7 +119,7 @@ class ScannerActivity : AppCompatActivity() {
     private fun startCameraSource() {
         cameraSource?.let {
             try {
-                preview?.start(cameraSource)
+                preview?.start(cameraSource, barcodeOverlay)
             } catch (e: IOException) {
                 cameraSource?.release()
                 cameraSource = null

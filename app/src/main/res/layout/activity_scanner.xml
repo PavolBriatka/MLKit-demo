@@ -16,6 +16,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true">
 
+        <com.example.redmlkitdemo.scannerutils.common.GraphicOverlay
+                android:id="@+id/barcodeOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
 
     </com.example.redmlkitdemo.scannerutils.common.CameraSourcePreview>
 
