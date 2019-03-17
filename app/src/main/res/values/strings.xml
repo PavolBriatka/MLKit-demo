@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RED MLKit Demo</string>
-    <string name="scanning_button">Scan a code</string>
+    <string name="scanning_button">Scan a QR code</string>
+    <string name="read_text_button">Read text</string>
 </resources>

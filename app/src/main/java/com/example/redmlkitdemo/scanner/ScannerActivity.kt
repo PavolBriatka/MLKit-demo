@@ -10,6 +10,8 @@ import android.os.Vibrator
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.example.redmlkitdemo.MainActivity.Companion.MODEL_TAG
 import com.example.redmlkitdemo.scannerutils.common.BarcodeScanningProcessor
 import com.example.redmlkitdemo.scannerutils.common.CameraSource
 import com.example.redmlkitdemo.scannerutils.common.FrameMetadata
@@ -39,6 +41,7 @@ class ScannerActivity : AppCompatActivity() {
             }
         }
     private lateinit var barcodeScanningProcessor: BarcodeScanningProcessor
+    private var model: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -46,8 +49,10 @@ class ScannerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(com.example.redmlkitdemo.R.layout.activity_scanner)
 
+        model = intent.getStringExtra(MODEL_TAG)
+
         if (allPermissionsGranted()) {
-            createCameraSource()
+            createCameraSource(model)
         } else {
             getRuntimePermissions()
         }
@@ -71,30 +76,44 @@ class ScannerActivity : AppCompatActivity() {
         cameraSource?.release()
     }
 
-    private fun createCameraSource() {
+    private fun createCameraSource(model: String) {
 
-        val options = FirebaseVisionBarcodeDetectorOptions.Builder()
-            .setBarcodeFormats(
-                FirebaseVisionBarcode.FORMAT_QR_CODE
-            )
-            .build()
+        when (model) {
+            "" -> {
+                Toast.makeText(applicationContext, "No valid model has been selected.", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            BARCODE_MODEL -> {
+                val options = FirebaseVisionBarcodeDetectorOptions.Builder()
+                    .setBarcodeFormats(
+                        FirebaseVisionBarcode.FORMAT_QR_CODE
+                    )
+                    .build()
 
-        val detector = FirebaseVision.getInstance()
-            .getVisionBarcodeDetector(options)
+                val detector = FirebaseVision.getInstance()
+                    .getVisionBarcodeDetector(options)
 
 
-        if (cameraSource == null) {
-            cameraSource = CameraSource(this)
+                if (cameraSource == null) {
+                    cameraSource = CameraSource(this)
+                }
+
+                barcodeScanningProcessor = BarcodeScanningProcessor(detector)
+                barcodeScanningProcessor.setBarcodeResultListener(getBarcodeResultListener())
+
+                try {
+                    cameraSource?.setMachineLearningFrameProcessor(barcodeScanningProcessor)
+                } catch (e: FirebaseMLException) {
+
+                }
+            }
+            OCR_MODEL -> {
+                Toast.makeText(applicationContext, "Not yet implemented", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
 
-        barcodeScanningProcessor = BarcodeScanningProcessor(detector)
-        barcodeScanningProcessor.setBarcodeResultListener(getBarcodeResultListener())
 
-        try {
-            cameraSource?.setMachineLearningFrameProcessor(barcodeScanningProcessor)
-        } catch (e: FirebaseMLException) {
-
-        }
     }
 
     private fun startCameraSource() {
@@ -134,7 +153,7 @@ class ScannerActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (allPermissionsGranted()) {
-            createCameraSource()
+            createCameraSource(model)
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -176,6 +195,8 @@ class ScannerActivity : AppCompatActivity() {
 
     companion object {
         private const val PERMISSION_REQUESTS = 1
+        private const val BARCODE_MODEL = "barcode_model"
+        private const val OCR_MODEL = "ocr_model"
 
         private fun isPermissionGranted(context: Context, permission: String): Boolean {
             if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {

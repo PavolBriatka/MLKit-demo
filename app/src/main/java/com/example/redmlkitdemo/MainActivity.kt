@@ -3,10 +3,10 @@ package com.example.redmlkitdemo
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import com.example.redmlkitdemo.scanner.ScannerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val PERMISSION_REQUESTS = 10
+        const val MODEL_TAG = "model_tag"
 
         private fun isPermissionGranted(context: Context, permission: String): Boolean {
             if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
@@ -44,8 +45,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         scanner_button.setOnClickListener {
-            val scannerIntent = Intent(this, ScannerActivity::class.java)
+            val scannerIntent = Intent(this, ScannerActivity::class.java).apply {
+                putExtra(MODEL_TAG, "barcode_model")
+            }
             startActivity(scannerIntent)
+        }
+
+        ocr_button.setOnClickListener {
+            val ocrIntent = Intent(this, ScannerActivity::class.java).apply {
+                putExtra(MODEL_TAG, "ocr_model")
+            }
+            startActivity(ocrIntent)
         }
 
         if (!allPermissionsGranted()) {
