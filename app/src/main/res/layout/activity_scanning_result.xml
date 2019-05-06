@@ -19,17 +19,4 @@
             android:autoLink="web"
             android:id="@+id/scanning_result"/>
 
-    <com.example.redmlkitdemo.IconCropView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            app:minimumSide="60dp"
-            app:resizeCornerDrawable="@drawable/ic_circle"
-            app:moveCornerDrawable="@drawable/ic_circle"
-            app:cornerColor="@color/colorPrimaryDark"
-            app:edgeColor="@color/colorPrimary"
-            app:outsideCropColor="#80000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:cornerSize="20dp"/>
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
